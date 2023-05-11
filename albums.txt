@@ -1,0 +1,47 @@
+4
+MCK
+99%
+2023
+Pop
+./src/images/99Percent.bmp
+3
+Anh Da On Hon
+./src/album/MCK/AnhDaOnHon.mp3
+Chi Mot Dem Nua Thoi
+./src/album/MCK/ChiMotDemNuaThoi.mp3
+Chim Sau
+./src/album/MCK/ChimSau.mp3
+Avicii
+The Days / Nights
+2018
+EDM
+./src/images/DaysNights.bmp
+4
+The Days
+./src/album/Avicii/TheDays.mp3
+The Nights
+./src/album/Avicii/TheNights.mp3
+The Days - Henrik B Remix
+./src/album/Avicii/TheDaysRemix.mp3
+The Nights - Felix Jaehn Remix
+./src/album/Avicii/TheNightsRemix.mp3
+HIEUTHUHAI
+Reeves
+2020
+Pop
+./src/images/Reeves.bmp
+2
+Reeves
+./src/album/HIEUTHUHAI/Reeves.mp3
+Bat Nhac Len
+./src/album/HIEUTHUHAI/BatNhacLen.mp3
+Andiez
+Cho Doi Co Dang So ?
+2020
+Chill
+./src/images/ChoDoiCoDangSo.bmp
+2
+Cho Doi Co Dang So ?
+./src/album/Andiez/ChoDoiCoDangSo.mp3
+Cho Doi Co Dang So ? - Lofi
+./src/album/Andiez/ChoDoiCoDangSoLofi.mp3
