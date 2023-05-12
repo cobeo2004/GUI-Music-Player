@@ -15,9 +15,10 @@ class PlayerInterface < Gosu::Window
     @small_font = Gosu::Font.new(11)
     @mid_font = Gosu::Font.new(13)
     @big_font = Gosu::Font.new(15)
-    @avail_tracks = @albums[album_number]["tracks"]
-    @curr_album_number = album_number
-    @hover_selector = nil
+    @album_number = album_number
+    @avail_tracks = @albums[@album_number]["tracks"]
+    @curr_album_number = nil
+    @selector = nil
     puts(@avail_tracks)
   end
 
@@ -30,14 +31,41 @@ class PlayerInterface < Gosu::Window
   end
 
   def mouse_hover?(mX, mY)
-    # Back (8) (20,15) -> (95, 26)
-    selector = nil
+    selector = Const::Tracks::NOTHING
     if(mX >= 0 && mX <= @width) && (mY >= 0 && mY <= @height)
+      if mX >= 170 && mX <= 410
+        if mY >= 430 && mY <= 460
+          selector = Const::Tracks::FIRST
+        elsif mY >= 460 && mY <= 480
+          selector = Const::Tracks::SECOND
+        elsif mY >= 485 && mY <= 510
+          selector = Const::Tracks::THIRD
+        elsif mY >= 510 && mY <= 530
+          selector = Const::Tracks::FOURTH
+        else
+          selector = Const::Tracks::NOTHING
+        end
+      end
+      if mY >= 630 && mY <= 670
+        if mX >= 290 && mX <= 310
+          selector = Const::Tracks::PLAYING
+        elsif mX >= 342 && mX <= 368
+          selector = Const::Tracks::PAUSING
+        elsif mX >= 215 && mX <= 250
+          selector = Const::Tracks::STOPPING
+        elsif mX >= 405 && mX <= 440
+          selector = Const::Tracks::NEXT_TRACK
+        elsif mX >= 150 && mX <= 185
+          selector = Const::Tracks::PREV_TRACK
+        else
+          selector = Const::Tracks::NOTHING
+        end
+      end
       if(mX >= 20 && mX <= 95) && (mY >= 15 && mY <= 26)
-        selector = 8
+        selector = Const::Tracks::BACK
       end
     else
-      selector = nil
+      selector = Const::Tracks::NOTHING
     end
     return selector
   end
@@ -46,19 +74,19 @@ class PlayerInterface < Gosu::Window
     init_x = 175
     init_y = 440
     Gosu.draw_rect(45, 110, @sel_width, @sel_height, Gosu::Color::WHITE, Const::ZOrder::MIDDLE, mode = :default)
-    @album_image = Gosu::Image.new(@albums[@curr_album_number]["album"].image)
-    case @curr_album_number
+    @album_image = Gosu::Image.new(@albums[@album_number]["album"].image)
+    case @album_number
     when 0
-      @big_font.draw("#{@albums[@curr_album_number]["album"].title} by #{@albums[@curr_album_number]["album"].artist}", 210, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
+      @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 210, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(190, 180, Const::ZOrder::TOP, 0.2, 0.2)
     when 1
-      @big_font.draw("#{@albums[@curr_album_number]["album"].title} by #{@albums[@curr_album_number]["album"].artist}", 130, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
+      @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 130, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(200, 200, Const::ZOrder::TOP, 0.3, 0.3)
     when 2
-      @big_font.draw("#{@albums[@curr_album_number]["album"].title} by #{@albums[@curr_album_number]["album"].artist}", 145, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
+      @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 145, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(190, 190, Const::ZOrder::TOP, 0.4, 0.4)
     when 3
-      @big_font.draw("#{@albums[@curr_album_number]["album"].title} by #{@albums[@curr_album_number]["album"].artist}", 90, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
+      @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 90, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(185, 190, Const::ZOrder::TOP, 0.18, 0.18)
     end
     @album_frame = Gosu::Image.new("./src/images/FrameFour.bmp")
@@ -97,13 +125,35 @@ class PlayerInterface < Gosu::Window
   def button_down(id)
     case id
     when Gosu::MsLeft
-      @hover_selector = mouse_hover?(mouse_x, mouse_y)
-      case @hover_selector
-      when 8
+      @selector = mouse_hover?(mouse_x, mouse_y)
+      case @selector
+      when Const::Tracks::FIRST
+        puts("Selecting first track")
+      when Const::Tracks::SECOND
+        puts("Selecting second track")
+      when Const::Tracks::THIRD
+        puts("Selecting third track")
+      when Const::Tracks::FOURTH
+        puts("Selecting fourth track")
+      when Const::Tracks::PLAYING
+        puts("Selecting play button")
+      when Const::Tracks::PAUSING
+        puts("Selecting pause button")
+      when Const::Tracks::STOPPING
+        puts("Selecting stop button")
+      when Const::Tracks::PREV_TRACK
+        puts("Selecting prev track button")
+      when Const::Tracks::NEXT_TRACK
+        puts("Selecting next track button")
+      when Const::Tracks::BACK
         puts("Returning back to main GUI")
         close
         AlbumInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE).show() if __FILE__ == $0
+      else
+        puts("Select nothing")
       end
+    else
+      puts("Just only implemented left mouse :)")
     end
   end
 end

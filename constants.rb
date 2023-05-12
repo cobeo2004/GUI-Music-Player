@@ -36,7 +36,8 @@ module Const
   module Tracks
     NOTHING = nil
     FIRST, SECOND, THIRD, FOURTH = *0..3
-    PLAYING, PAUSING, STOPPING, NEXT_TRACK, PREV_TRACK = *3..7
+    PLAYING, PAUSING, STOPPING, NEXT_TRACK, PREV_TRACK = *4..8
+    BACK = 9
   end
 end
 
