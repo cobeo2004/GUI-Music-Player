@@ -235,7 +235,7 @@ class PlayerInterface < Gosu::Window
       when Const::Tracks::BACK
         puts("Returning back to main GUI")
         @song.stop()
-        close
+        close()
         AlbumInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE).show() if __FILE__ == $0
       else
         puts("Select nothing")
