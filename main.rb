@@ -163,39 +163,43 @@ class PlayerInterface < Gosu::Window
       when Const::Tracks::FIRST
         @curr_track_number = Const::Tracks::FIRST
         @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+        @song.play(false)
         puts("Selecting first track")
       when Const::Tracks::SECOND
         if @curr_track_number < @avail_tracks.length
           @curr_track_number = Const::Tracks::SECOND
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+          @song.play(false)
           puts("Selecting second track")
         else
           @curr_track_number = Const::Tracks::FIRST
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @curr_state_number = Const::Tracks::INVALID
+          @song.play(false)
           puts("No track available")
         end
       when Const::Tracks::THIRD
         if @curr_track_number < @avail_tracks.length
           @curr_track_number = Const::Tracks::THIRD
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+          @song.play(false)
           puts("Selecting third track")
         else
           @curr_track_number = Const::Tracks::SECOND
-          @curr_state_number = Const::Tracks::INVALID
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+          @song.play(false)
           puts("No track available")
         end
       when Const::Tracks::FOURTH
         if @curr_track_number < @avail_tracks.length
           @curr_track_number = Const::Tracks::FOURTH
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+          @song.play(false)
           puts("Selecting fourth track")
         end
         if @curr_track_number >= @avail_tracks.length
           @curr_track_number = Const::Tracks::THIRD
-          @curr_state_number = Const::Tracks::INVALID
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+          @song.play(false)
           puts("No track available")
         end
       when Const::Tracks::PLAYING
@@ -235,7 +239,7 @@ class PlayerInterface < Gosu::Window
       when Const::Tracks::BACK
         puts("Returning back to main GUI")
         @song.stop()
-        close()
+        close
         AlbumInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE).show() if __FILE__ == $0
       else
         puts("Select nothing")
