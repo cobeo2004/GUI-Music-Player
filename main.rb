@@ -74,16 +74,14 @@ class PlayerInterface < Gosu::Window
   def state(current_value)
     current_state = ""
     case current_value
-    when 4
+    when Const::Tracks::PLAYING
       current_state = "Now playing:"
-    when 5
+    when Const::Tracks::PAUSING
       current_state = "Pausing at:"
-    when 6
+    when Const::Tracks::STOPPING
       current_state = "Stopping at:"
-    when 10
-      current_state = "No song!\nPlease choose another."
-    end
     return current_state
+    end
   end
 
   def draw_player()
@@ -92,27 +90,24 @@ class PlayerInterface < Gosu::Window
     Gosu.draw_rect(45, 110, @width - 100, @height - 200, Gosu::Color::WHITE, Const::ZOrder::MIDDLE, mode = :default)
     @album_image = Gosu::Image.new(@albums[@album_number]["album"].image)
     case @album_number
-    when 0
+    when Const::Album::FIRST
       @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 210, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(190, 180, Const::ZOrder::TOP, 0.2, 0.2)
-    when 1
+    when Const::Album::SECOND
       @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 130, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(200, 200, Const::ZOrder::TOP, 0.3, 0.3)
-    when 2
+    when Const::Album::THIRD
       @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 145, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(190, 190, Const::ZOrder::TOP, 0.4, 0.4)
-    when 3
+    when Const::Album::FOURTH
       @big_font.draw("#{@albums[@album_number]["album"].title} by #{@albums[@album_number]["album"].artist}", 90, 150, Const::ZOrder::TOP, 2.0, 2.0, Gosu::Color::BLACK)
       @album_image.draw(185, 190, Const::ZOrder::TOP, 0.18, 0.18)
     end
     @album_frame = Gosu::Image.new("./src/images/FrameFour.bmp")
     @album_frame.draw(170, 430, Const::ZOrder::TOP, 0.4, 0.4)
 
-    if state(@curr_state_number) == Const::Tracks::INVALID
-      @big_font.draw("#{state(@curr_state_number)}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
-    else
-      @big_font.draw("#{state(@curr_state_number)}\n#{@avail_tracks[@curr_track_number].name}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
-    end
+
+    @big_font.draw("#{state(@curr_state_number)}\n#{@avail_tracks[@curr_track_number].name == " " ? "Unavailable" : @avail_tracks[@curr_track_number].name}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
 
     for i in @avail_tracks
       @big_font.draw(i.name, init_x, init_y, Const::ZOrder::TOP, 1, 1, Gosu::Color::BLACK)
@@ -162,46 +157,45 @@ class PlayerInterface < Gosu::Window
       case @selector
       when Const::Tracks::FIRST
         @curr_track_number = Const::Tracks::FIRST
+        puts("Selecting first track")
+        if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
+          @curr_state_number = Const::Tracks::INVALID
+          puts("No track available")
+        end
+        @curr_state_number = Const::Tracks::PLAYING
         @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
         @song.play(false)
-        puts("Selecting first track")
       when Const::Tracks::SECOND
-        if @curr_track_number < @avail_tracks.length
-          @curr_track_number = Const::Tracks::SECOND
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
-          puts("Selecting second track")
-        else
-          @curr_track_number = Const::Tracks::FIRST
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
+        @curr_track_number = Const::Tracks::SECOND
+        puts("Selecting second tracks")
+        if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
+          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
+        @curr_state_number = Const::Tracks::PLAYING
+        @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+        @song.play(false)
+
       when Const::Tracks::THIRD
-        if @curr_track_number < @avail_tracks.length
-          @curr_track_number = Const::Tracks::THIRD
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
-          puts("Selecting third track")
-        else
-          @curr_track_number = Const::Tracks::SECOND
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
+        @curr_track_number = Const::Tracks::THIRD
+        puts("Selecting third track")
+        if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
+          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
+        @curr_state_number = Const::Tracks::PLAYING
+        @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+        @song.play(false)
       when Const::Tracks::FOURTH
-        if @curr_track_number < @avail_tracks.length
-          @curr_track_number = Const::Tracks::FOURTH
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
-          puts("Selecting fourth track")
-        end
-        if @curr_track_number >= @avail_tracks.length
-          @curr_track_number = Const::Tracks::THIRD
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
+        @curr_track_number = Const::Tracks::FOURTH
+        puts("Selecting fourth track")
+        if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
+          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
+        @curr_state_number = Const::Tracks::PLAYING
+        @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+        @song.play(false)
       when Const::Tracks::PLAYING
         @curr_state_number = Const::Tracks::PLAYING
         @song.play(false)
@@ -215,7 +209,7 @@ class PlayerInterface < Gosu::Window
         @song.stop()
         puts("Selecting stop button")
       when Const::Tracks::NEXT_TRACK
-        if @curr_track_number < @avail_tracks.length - 1
+        if @curr_track_number < @avail_tracks.length - 1 && @avail_tracks[@curr_track_number].name != " "
           @curr_track_number += 1
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
           @song.play(false)
@@ -226,7 +220,7 @@ class PlayerInterface < Gosu::Window
         end
         puts("Selecting prev track button")
       when Const::Tracks::PREV_TRACK
-        if @curr_track_number > 0
+        if @curr_track_number > 0 @avail_tracks[@curr_track_number].name == " "
           @curr_track_number -= 1
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
           @song.play(false)
