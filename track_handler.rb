@@ -17,6 +17,8 @@ def read_tracks(file)
     index += 1
   end
 
+  remaining = 4 - tracks.length
+  remaining.times {tracks << read_track("Unavailable", "src/album/Unavailable.mp3")}
   return tracks
 end
 
