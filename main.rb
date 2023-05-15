@@ -106,8 +106,8 @@ class PlayerInterface < Gosu::Window
     @album_frame = Gosu::Image.new("./src/images/FrameFour.bmp")
     @album_frame.draw(170, 430, Const::ZOrder::TOP, 0.4, 0.4)
 
-
-    @big_font.draw("#{state(@curr_state_number)}\n#{@avail_tracks[@curr_track_number].name == " " ? "Unavailable" : @avail_tracks[@curr_track_number].name}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
+    @big_font.draw("#{state(@curr_state_number)}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
+    @big_font.draw("\n#{@avail_tracks[@curr_track_number].name == " " ? "Unavailable" : @avail_tracks[@curr_track_number].name}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
 
     for i in @avail_tracks
       @big_font.draw(i.name, init_x, init_y, Const::ZOrder::TOP, 1, 1, Gosu::Color::BLACK)
@@ -129,8 +129,8 @@ class PlayerInterface < Gosu::Window
     draw_player()
 
     #Debugger
-    @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
-    @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    # @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    # @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
   end
 
   def update()
@@ -159,7 +159,6 @@ class PlayerInterface < Gosu::Window
         @curr_track_number = Const::Tracks::FIRST
         puts("Selecting first track")
         if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
-          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
         @curr_state_number = Const::Tracks::PLAYING
@@ -169,7 +168,6 @@ class PlayerInterface < Gosu::Window
         @curr_track_number = Const::Tracks::SECOND
         puts("Selecting second tracks")
         if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
-          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
         @curr_state_number = Const::Tracks::PLAYING
@@ -180,7 +178,6 @@ class PlayerInterface < Gosu::Window
         @curr_track_number = Const::Tracks::THIRD
         puts("Selecting third track")
         if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
-          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
         @curr_state_number = Const::Tracks::PLAYING
@@ -190,7 +187,6 @@ class PlayerInterface < Gosu::Window
         @curr_track_number = Const::Tracks::FOURTH
         puts("Selecting fourth track")
         if @avail_tracks[@curr_track_number].name == " " && @avail_tracks[@curr_track_number].location == "src/album/Unavailable.mp3"
-          @curr_state_number = Const::Tracks::INVALID
           puts("No track available")
         end
         @curr_state_number = Const::Tracks::PLAYING
@@ -220,7 +216,7 @@ class PlayerInterface < Gosu::Window
         end
         puts("Selecting prev track button")
       when Const::Tracks::PREV_TRACK
-        if @curr_track_number > 0 @avail_tracks[@curr_track_number].name == " "
+        if @curr_track_number > 0 && @avail_tracks[@curr_track_number].name == " "
           @curr_track_number -= 1
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
           @song.play(false)
@@ -329,8 +325,8 @@ class AlbumInterface < Gosu::Window
     draw_selector()
 
     #Debugger
-    @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
-    @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    # @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    # @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
   end
 
   def update()
