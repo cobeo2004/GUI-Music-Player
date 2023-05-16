@@ -288,7 +288,7 @@ class AlbumInterface < Gosu::Window
     return album_selection
   end
 
-  def draw_selector(
+  def draw_selector()
     Gosu.draw_rect(45, 110, @sel_width, @sel_height, Gosu::Color::WHITE, Const::ZOrder::MIDDLE, mode = :default)
     @hovered_album = mouse_hover?(mouse_x, mouse_y)
     if @is_hovering_album
