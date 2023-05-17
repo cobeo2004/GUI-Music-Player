@@ -134,7 +134,7 @@ class PlayerInterface < Gosu::Window
   end
 
   def update()
-    puts("#{@avail_tracks.inspect} : #{@curr_track_number}")
+    # puts("#{@avail_tracks.inspect} : #{@curr_track_number}")
   end
 
   def needs_cursor?
