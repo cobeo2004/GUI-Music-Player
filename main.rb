@@ -216,7 +216,7 @@ class PlayerInterface < Gosu::Window
         end
         puts("Selecting prev track button")
       when Const::Tracks::PREV_TRACK
-        if @curr_track_number > 0 && @avail_tracks[@curr_track_number].name == " "
+        if @curr_track_number > 0 && @avail_tracks[@curr_track_number].name != " "
           @curr_track_number -= 1
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
           @song.play(false)
