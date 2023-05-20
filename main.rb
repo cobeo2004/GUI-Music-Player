@@ -116,10 +116,11 @@ class PlayerInterface < Gosu::Window
 
     @album_button = Gosu::Image.new("./src/images/Button.bmp")
     @album_button.draw(140, 600, Const::ZOrder::TOP, 0.5, 0.5)
-
-
   end
 
+  def draw_volume()
+    @small_font.draw("Volume: #{(@song.volume * 100).round(0)}%", 300, 600, Const::ZOrder::TOP, 1, 1, Gosu::Color::BLACK)
+  end
 
 
   #/////////////////////////////// DEFAULT TRIGGERING FUNCTIONS ////////////////////////////////
@@ -127,6 +128,7 @@ class PlayerInterface < Gosu::Window
   def draw()
     draw_background()
     draw_player()
+    draw_volume()
 
     #Debugger
     # @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
@@ -143,6 +145,12 @@ class PlayerInterface < Gosu::Window
 
   def button_down(id)
     case id
+    when Gosu::KbDown
+      @song.volume = @song.volume - 0.05
+      puts("Press kb down")
+    when Gosu::KbUp
+      @song.volume = @song.volume + 0.05
+      puts("Press kb up")
     when Gosu::KbP
       @curr_state_number = Const::Tracks::PLAYING
       @song.play(false)
