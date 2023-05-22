@@ -3,6 +3,9 @@ require './constants'
 require './input_functions'
 require './track_handler'
 
+VOLUME_BAR_WIDTH = 20
+VOLUME_BAR_HEIGHT = 200
+
 class PlayerInterface < Gosu::Window
   def initialize(width, height, is_full_screen, caption, album_number)
     super(width, height, is_full_screen)
@@ -119,8 +122,16 @@ class PlayerInterface < Gosu::Window
   end
 
   def draw_volume()
-    @small_font.draw("Volume: #{(@song.volume * 100).round(0)}%", 300, 600, Const::ZOrder::TOP, 1, 1, Gosu::Color::BLACK)
+    volume_bar_x = 450
+    volume_bar_y = 200
+
+    Gosu.draw_rect(volume_bar_x, volume_bar_y, VOLUME_BAR_WIDTH, VOLUME_BAR_HEIGHT, Gosu::Color::GRAY, Const::ZOrder::TOP, mode = :default)
+
+    volume_fill_height = (@song.volume * VOLUME_BAR_HEIGHT).round(0)
+    Gosu.draw_rect(volume_bar_x, volume_bar_y + (VOLUME_BAR_HEIGHT - volume_fill_height), VOLUME_BAR_WIDTH, volume_fill_height, Gosu::Color::GREEN, Const::ZOrder::TOP, mode = :default)
+    @small_font.draw("Volume: #{(@song.volume * 100).round(0)}%", volume_bar_x - 20, volume_bar_y + VOLUME_BAR_HEIGHT + 20, Const::ZOrder::TOP, 1, 1, Gosu::Color::BLACK)
   end
+
 
 
   #/////////////////////////////// DEFAULT TRIGGERING FUNCTIONS ////////////////////////////////
@@ -324,6 +335,9 @@ class AlbumInterface < Gosu::Window
     @album_image.draw(310, 430, Const::ZOrder::TOP, 0.167, 0.167)
     @big_font.draw("#{@albums[3]["album"].title} \n   By #{@albums[3]["album"].artist} @ #{@albums[3]["album"].year}", 345, 650, 3, 1.0, 1.0, Gosu::Color::BLACK)
   end
+
+
+
 
 
   #/////////////////////////////// DEFAULT TRIGGERING FUNCTIONS ////////////////////////////////
