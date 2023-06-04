@@ -96,6 +96,8 @@ class PlayerInterface < Gosu::Window
   end
 
   private def mouse_hover?(mX, mY)
+    #(485 -> 278) -> (515, 250)
+    # (485 -> 325) -> (515, 352)
     selector = Const::Tracks::NOTHING
     if(mX >= 0 && mX <= @width) && (mY >= 0 && mY <= @height)
       if mX >= 170 && mX <= 410
@@ -131,6 +133,14 @@ class PlayerInterface < Gosu::Window
       end
       if(mX >= 480 && mX <= 580) && (mY >= 10 && mY <= 20)
         selector = Const::Tracks::INSTRUCTION
+      end
+      if(mX >= 485 && mX <= 515)
+        if(mY <= 278 && mY >= 250)
+          selector = Const::Tracks::PRESS_VOL_UP
+        end
+        if(mY >= 325 && mY <= 352)
+          selector = Const::Tracks::PRESS_VOL_DOWN
+        end
       end
     else
       selector = Const::Tracks::NOTHING
@@ -196,6 +206,10 @@ class PlayerInterface < Gosu::Window
     @small_font.draw("Volume: #{(@song.volume * 100).round(0)}%", volume_bar_x - 20, volume_bar_y + VOLUME_BAR_HEIGHT + 20, Const::ZOrder::TOP, 1, 1, Gosu::Color::BLACK)
   end
 
+  private def draw_volume_button()
+    button = Gosu::Image.new("src/images/up_down.png")
+    button.draw(450, 250, Const::ZOrder::ON_TOP_OF_THE_WORLD, 0.2, 0.2)
+  end
 
 
   #/////////////////////////////// DEFAULT TRIGGERING FUNCTIONS ////////////////////////////////
@@ -204,7 +218,7 @@ class PlayerInterface < Gosu::Window
     draw_background()
     draw_player()
     draw_volume()
-
+    draw_volume_button()
     #Debugger
     @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
     @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
@@ -332,6 +346,14 @@ class PlayerInterface < Gosu::Window
       when Const::Tracks::INSTRUCTION
         puts("instruction")
         AlbumInstruction.new("Instruction").show()
+      when Const::Tracks::PRESS_VOL_UP
+        @song.volume += 0.05
+        @song.volume = 1 if @song.volume > 1
+        @song.volume = 0 if @song.volume < 0
+      when Const::Tracks::PRESS_VOL_DOWN
+        @song.volume -= 0.05
+        @song.volume = 1 if @song.volume > 1
+        @song.volume = 0 if @song.volume < 0
       else
         puts("Select nothing")
       end
