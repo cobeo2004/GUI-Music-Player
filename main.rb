@@ -290,23 +290,38 @@ class PlayerInterface < Gosu::Window
       when Const::Tracks::NEXT_TRACK
         if @curr_track_number < @avail_tracks.length - 1 && @avail_tracks[@curr_track_number].name != " "
           @curr_track_number += 1
+          @curr_state_number = Const::Tracks::PLAYING
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
           @song.play(false)
         else
-          @curr_track_number = Const::Tracks::FIRST
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
+          # @curr_track_number = Const::Tracks::FIRST
+          # @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
+          # @song.play(false)
+          $album_selector += 1
+          if($album_selector > Const::Tracks::FOURTH)
+            $album_selector = Const::Tracks::FIRST
+          end
+          @song.stop()
+          @curr_state_number = Const::Tracks::STOPPING
+          PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
+          close
         end
         puts("Selecting prev track button")
       when Const::Tracks::PREV_TRACK
         if @curr_track_number > 0 && @avail_tracks[@curr_track_number].name != " "
           @curr_track_number -= 1
+          @curr_state_number = Const::Tracks::PLAYING
           @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
           @song.play(false)
         else
-          @curr_track_number = @avail_tracks.length - 1
-          @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-          @song.play(false)
+          $album_selector -= 1
+          if($album_selector < Const::Tracks::FIRST)
+            $album_selector = Const::Tracks::FOURTH
+          end
+          @song.stop()
+          @curr_state_number = Const::Tracks::STOPPING
+          PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
+          close
         end
         puts("Selecting next track button")
       when Const::Tracks::BACK
