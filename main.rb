@@ -7,7 +7,7 @@ VOLUME_BAR_WIDTH = 20
 VOLUME_BAR_HEIGHT = 200
 
 class PlayerInterface < Gosu::Window
-  def initialize(width, height, is_full_screen, caption, album_number)
+  protected def initialize(width, height, is_full_screen, caption, album_number)
     super(width, height, is_full_screen)
     self.caption = caption
     @width = width
@@ -21,12 +21,12 @@ class PlayerInterface < Gosu::Window
     @curr_track_number = 0
     @curr_state_number = Const::Tracks::STOPPING
     @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
-    @song.volume = 0.5
+    @song.volume = 1
     @selector = nil
     puts(@avail_tracks)
   end
 
-  def draw_background()
+  private def draw_background()
     @big_font.draw("Back <<", 20, 10, Const::ZOrder::MIDDLE, 1.5, 1.5, Gosu::Color::WHITE)
     @big_font.draw("Choose 1 on #{@avail_tracks.length} songs below to play", 81, 50, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
     Gosu.draw_rect(0, 0, Const::Window::WIDTH, Const::Window::HEIGHT, Const::Color::MID_BLUE, Const::ZOrder::BACKGROUND, mode = :default)
@@ -34,7 +34,7 @@ class PlayerInterface < Gosu::Window
     @swin_logo.draw(230, 725, Const::ZOrder::MIDDLE, 0.1, 0.1)
   end
 
-  def mouse_hover?(mX, mY)
+  private def mouse_hover?(mX, mY)
     selector = Const::Tracks::NOTHING
     if(mX >= 0 && mX <= @width) && (mY >= 0 && mY <= @height)
       if mX >= 170 && mX <= 410
@@ -74,7 +74,7 @@ class PlayerInterface < Gosu::Window
     return selector
   end
 
-  def state(current_value)
+  private def state(current_value)
     current_state = ""
     case current_value
     when Const::Tracks::PLAYING
@@ -87,7 +87,7 @@ class PlayerInterface < Gosu::Window
     end
   end
 
-  def draw_player()
+  private def draw_player()
     init_x = 175
     init_y = 440
     Gosu.draw_rect(45, 110, @width - 100, @height - 200, Gosu::Color::WHITE, Const::ZOrder::MIDDLE, mode = :default)
@@ -121,7 +121,7 @@ class PlayerInterface < Gosu::Window
     @album_button.draw(140, 600, Const::ZOrder::TOP, 0.5, 0.5)
   end
 
-  def draw_volume()
+  private def draw_volume()
     volume_bar_x = 450
     volume_bar_y = 200
 
@@ -136,7 +136,7 @@ class PlayerInterface < Gosu::Window
 
   #/////////////////////////////// DEFAULT TRIGGERING FUNCTIONS ////////////////////////////////
 
-  def draw()
+  public def draw()
     draw_background()
     draw_player()
     draw_volume()
@@ -146,15 +146,15 @@ class PlayerInterface < Gosu::Window
     # @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
   end
 
-  def update()
+  public def update()
     # puts("#{@avail_tracks.inspect} : #{@curr_track_number}")
   end
 
-  def needs_cursor?
+  public def needs_cursor?
     true
   end
 
-  def button_down(id)
+  public def button_down(id)
     case id
     when Gosu::KbDown
       @song.volume = @song.volume - 0.05
@@ -259,8 +259,27 @@ class PlayerInterface < Gosu::Window
   end
 end
 
+class AlbumInstruction < Gosu::Window
+  def initialize(width, height, *args)
+    super(width, height, args[0])
+    self.title = args[1]
+  end
+
+  def draw()
+    draw_background()
+    draw_instructions()
+    draw_
+  end
+
+  def button_down(id)
+
+  end
+
+
+end
+
 class AlbumInterface < Gosu::Window
-  def initialize(width, height, is_full_screen, caption)
+  protected def initialize(width, height, is_full_screen, caption)
     super(width, height, is_full_screen)
     self.caption = caption
     @sel_width = width - 100
@@ -275,14 +294,14 @@ class AlbumInterface < Gosu::Window
     puts(@albums)
   end
 
-  def draw_background()
+  private def draw_background()
     @big_font.draw("Choose 1 on #{@albums.length} albums below to play", 81, 50, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
     Gosu.draw_rect(0, 0, Const::Window::WIDTH, Const::Window::HEIGHT, Const::Color::MID_BLUE, Const::ZOrder::BACKGROUND, mode = :default)
     @swin_logo = Gosu::Image.new("./src/images/SwinburneLogo.bmp")
     @swin_logo.draw(230, 725, Const::ZOrder::MIDDLE, 0.1, 0.1)
   end
 
-  def mouse_hover?(mX, mY)
+  private def mouse_hover?(mX, mY)
     # Album 1: (70,140) -> (270, 340) -> width 200, height 200 for all
     # Album 2: (310, 140) -> (515, 340)
     # Album 3: (70, 433) -> (270, 630)
@@ -307,7 +326,7 @@ class AlbumInterface < Gosu::Window
     return album_selection
   end
 
-  def draw_selector()
+  private def draw_selector()
     Gosu.draw_rect(45, 110, @sel_width, @sel_height, Gosu::Color::WHITE, Const::ZOrder::MIDDLE, mode = :default)
     @hovered_album = mouse_hover?(mouse_x, mouse_y)
     if @is_hovering_album
@@ -342,7 +361,7 @@ class AlbumInterface < Gosu::Window
 
   #/////////////////////////////// DEFAULT TRIGGERING FUNCTIONS ////////////////////////////////
 
-  def draw()
+  public def draw()
     draw_background()
     draw_selector()
 
@@ -351,7 +370,7 @@ class AlbumInterface < Gosu::Window
     # @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
   end
 
-  def update()
+  public def update()
     if mouse_hover?(mouse_x, mouse_y) != nil
       @is_hovering_album = true
     else
@@ -359,11 +378,11 @@ class AlbumInterface < Gosu::Window
     end
   end
 
-  def needs_cursor?
+  public def needs_cursor?
     true
   end
 
-  def button_down(id)
+  public def button_down(id)
     case id
     when Gosu::MsLeft
 
