@@ -5,8 +5,68 @@ require './track_handler'
 
 VOLUME_BAR_WIDTH = 20
 VOLUME_BAR_HEIGHT = 200
+$album_selector = nil
+class AlbumInstruction < Gosu::Window
+  protected def initialize(title)
+    super(400, 300, false)
+    self.caption = title
+    @small_font = Gosu::Font.new(11)
+    @mid_font = Gosu::Font.new(13)
+    @big_font = Gosu::Font.new(18)
+    @width = self.width
+    @height = self.height
+  end
 
+  private def draw_background()
+    Gosu.draw_rect(0, 0, Const::Window::WIDTH, Const::Window::HEIGHT, Const::Color::MID_BLUE, Const::ZOrder::BACKGROUND, mode = :default)
+    @big_font.draw("Instructions",  (@width / 2) - 80 , 30, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+  end
+
+  private def draw_instructions()
+    @small_font.draw("'Up': Increase the volume", (@width / 2) - 130, 80, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+    @small_font.draw("'Down': Decrease the volume", (@width / 2) - 130, 100, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+    @small_font.draw("'Left': Previous track", (@width / 2) - 130, 120, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+    @small_font.draw("'Right': Next track", (@width / 2) - 130, 140, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+    @small_font.draw("'P': Play song", (@width / 2) - 130, 160, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+    @small_font.draw("'S': Stop song", (@width / 2) - 130, 180, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+    @small_font.draw("'I': Pause song", (@width / 2) - 130, 200, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
+  end
+
+  private def draw_back_button()
+    @mid_font.draw("Back <<", 20, 10, Const::ZOrder::MIDDLE, 1.5, 1.5, Gosu::Color::WHITE)
+  end
+
+  private def mouse_hover?(mX, mY)
+    #(20,15) -> (85, 30)
+    selector = nil
+    if(mX >= 20 && mX <= 85) && (mY >= 15 && mY <= 30)
+      selector = 1
+    end
+    return selector
+  end
+  public def draw()
+    draw_background()
+    draw_instructions()
+    draw_back_button()
+    @small_font.draw("mX: #{mouse_x}", @width / 2, @height - 50, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    @small_font.draw("mY: #{mouse_y}", @width / 2, @height - 40, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+  end
+
+  public def button_down(id)
+    case id
+    when Gosu::MsLeft
+      sel = mouse_hover?(mouse_x, mouse_y)
+      if(sel == 1)
+        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
+        close
+      end
+    end
+  end
+
+
+end
 class PlayerInterface < Gosu::Window
+  attr_accessor :caption
   protected def initialize(width, height, is_full_screen, caption, album_number)
     super(width, height, is_full_screen)
     self.caption = caption
@@ -28,6 +88,7 @@ class PlayerInterface < Gosu::Window
 
   private def draw_background()
     @big_font.draw("Back <<", 20, 10, Const::ZOrder::MIDDLE, 1.5, 1.5, Gosu::Color::WHITE)
+    @big_font.draw("Instruction >>", 460, 10, Const::ZOrder::MIDDLE, 1.5, 1.5, Gosu::Color::WHITE)
     @big_font.draw("Choose 1 on #{@avail_tracks.length} songs below to play", 81, 50, Const::ZOrder::MIDDLE, 2.0, 2.0, Gosu::Color::WHITE)
     Gosu.draw_rect(0, 0, Const::Window::WIDTH, Const::Window::HEIGHT, Const::Color::MID_BLUE, Const::ZOrder::BACKGROUND, mode = :default)
     @swin_logo = Gosu::Image.new("./src/images/SwinburneLogo.bmp")
@@ -67,6 +128,9 @@ class PlayerInterface < Gosu::Window
       end
       if(mX >= 20 && mX <= 95) && (mY >= 15 && mY <= 26)
         selector = Const::Tracks::BACK
+      end
+      if(mX >= 480 && mX <= 580) && (mY >= 10 && mY <= 20)
+        selector = Const::Tracks::INSTRUCTION
       end
     else
       selector = Const::Tracks::NOTHING
@@ -142,8 +206,8 @@ class PlayerInterface < Gosu::Window
     draw_volume()
 
     #Debugger
-    # @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
-    # @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    @small_font.draw("mX: #{mouse_x}", 200, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    @small_font.draw("mY: #{mouse_y}", 300, 790, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
   end
 
   public def update()
@@ -248,8 +312,11 @@ class PlayerInterface < Gosu::Window
       when Const::Tracks::BACK
         puts("Returning back to main GUI")
         @song.stop()
-        close
         AlbumInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE).show() if __FILE__ == $0
+        close
+      when Const::Tracks::INSTRUCTION
+        puts("instruction")
+        AlbumInstruction.new("Instruction").show()
       else
         puts("Select nothing")
       end
@@ -259,26 +326,8 @@ class PlayerInterface < Gosu::Window
   end
 end
 
-class AlbumInstruction < Gosu::Window
-  def initialize(width, height, *args)
-    super(width, height, args[0])
-    self.title = args[1]
-  end
-
-  def draw()
-    draw_background()
-    draw_instructions()
-    draw_
-  end
-
-  def button_down(id)
-
-  end
-
-
-end
-
 class AlbumInterface < Gosu::Window
+  attr_accessor :caption
   protected def initialize(width, height, is_full_screen, caption)
     super(width, height, is_full_screen)
     self.caption = caption
@@ -390,21 +439,25 @@ class AlbumInterface < Gosu::Window
       when Const::Album::NOTHING
         puts("Not the right one")
       when Const::Album::FIRST
+        $album_selector = Const::Album::FIRST
         puts("Pressed on album one")
+        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
         close
-        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, Const::Album::FIRST).show() if __FILE__ == $0
       when Const::Album::SECOND
+        $album_selector = Const::Album::SECOND
         puts("Pressed on album two")
+        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
         close
-        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, Const::Album::SECOND).show() if __FILE__ == $0
       when Const::Album::THIRD
+        $album_selector = Const::Album::THIRD
         puts("Pressed on album three")
+        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
         close
-        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, Const::Album::THIRD).show() if __FILE__ == $0
       when Const::Album::FOURTH
+        $album_selector = Const::Album::FOURTH
         puts("Pressed on album fourth")
+        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, $album_selector).show() if __FILE__ == $0
         close
-        PlayerInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE, Const::Album::FOURTH).show() if __FILE__ == $0
       end
 
     end
@@ -414,5 +467,6 @@ end
 
 app = AlbumInterface.new(Const::Window::WIDTH, Const::Window::HEIGHT, Const::Window::NOT_FULL_SCREEN, Const::Window::TITLE)
 app.show() if __FILE__ == $0
+# AlbumInstruction.new("ok").show
 
 

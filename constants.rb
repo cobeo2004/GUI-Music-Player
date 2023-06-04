@@ -38,7 +38,8 @@ module Const
     FIRST, SECOND, THIRD, FOURTH = *0..3
     PLAYING, PAUSING, STOPPING, NEXT_TRACK, PREV_TRACK = *4..8
     BACK = 9
-    INVALID = 10
+    INSTRUCTION = 10
+    INVALID = 69
   end
 end
 
