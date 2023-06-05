@@ -48,8 +48,8 @@ class AlbumInstruction < Gosu::Window
     draw_background()
     draw_instructions()
     draw_back_button()
-    @small_font.draw("mX: #{mouse_x}", @width / 2, @height - 50, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
-    @small_font.draw("mY: #{mouse_y}", @width / 2, @height - 40, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    # @small_font.draw("mX: #{mouse_x}", @width / 2, @height - 50, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
+    # @small_font.draw("mY: #{mouse_y}", @width / 2, @height - 40, Const::ZOrder::TOP, 1.0, 1.0, Gosu::Color::BLACK)
   end
 
   public def button_down(id)
@@ -78,7 +78,7 @@ class PlayerInterface < Gosu::Window
     @big_font = Gosu::Font.new(15)
     @album_number = album_number
     @avail_tracks = @albums[@album_number]["tracks"]
-    @curr_track_number = 0
+    @curr_track_number = Const::Tracks::FIRST
     @curr_state_number = Const::Tracks::STOPPING
     @song = Gosu::Song.new(@avail_tracks[@curr_track_number].location)
     @song.volume = 1
@@ -182,7 +182,6 @@ class PlayerInterface < Gosu::Window
     end
     @album_frame = Gosu::Image.new("./src/images/FrameFour.bmp")
     @album_frame.draw(170, 430, Const::ZOrder::TOP, 0.4, 0.4)
-
     @big_font.draw("#{state(@curr_state_number)}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
     @big_font.draw("\n#{@avail_tracks[@curr_track_number].name == " " ? "Unavailable" : @avail_tracks[@curr_track_number].name}", 170, 550, Const::ZOrder::TOP, 1.5, 1.5, Gosu::Color::BLACK)
 
